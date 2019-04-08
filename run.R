@@ -1,0 +1,6 @@
+source('start.R')
+source('jomo.r')
+source('functions.R')
+source('table 1. R')
+source('case-study no selection.R')
+source('case-study with selection.R')
