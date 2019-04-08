@@ -4,7 +4,6 @@ remove(list = ls())
 # metamisc version of 5 April 2019 or later is necessary.
 # install.packages("metamisc", repos="http://R-Forge.R-project.org")
 library(metamisc)
-library(splines)
 source("functions.R")
 
 ##### The data
