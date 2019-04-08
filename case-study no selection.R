@@ -1,7 +1,9 @@
 remove(list = ls())
 
 ##### Functions
-library(metamisc) # Version of December 2018 or later is necessary.
+# metamisc version of 8 April 2019 or later is necessary.
+# install.packages("metamisc", repos="http://R-Forge.R-project.org")
+library(metamisc) 
 source("functions.R")
 
 ############ The data
@@ -32,6 +34,10 @@ m0.mse <- perf(cv0)
 m0.auc <- perf(cv0, perfFUN = "auc")
 m0.slo <- perf(cv0, perfFUN = "cal.slope")
 m0.int <- perf(cv0, perfFUN = "bin.cal.int")
+
+ma(m0.auc)
+ma(m0.slo)
+ma(m0.int)
 
 studylabels <- as.character(m0.mse$val.strata)
 
