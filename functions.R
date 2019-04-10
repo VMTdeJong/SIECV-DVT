@@ -9,20 +9,21 @@ est.se <- function(est, se, digits = 2) {
     as.matrix(paste(est, " (", se , ")", sep = ""), ncol = 1)
 }
 
-#' Get a summary of the performance and generalizability of a metapred fit.
+#' Get a summary of the performance and generalizability of multiple metapred fits.
 #' 
-#' @param m metapred model object
+#' @param models a list of metapred model objects
 #' @param perfFUN id or name of performance function.
-#' @param model_names names of model fits (make one up yourself)
+#' @param model_names names of model fits (make some up yourself)
 #' @param stat_used statistics of the MA of performance that are to be used
 #' @param digits digits for rounding
-get_summary <- function(models, perfFUN = 1, model_names, stat_used = c("est", "tau", "pi.lb", "pi.ub"), digits = 2) {
-    s <- sapply(lapply(lapply(models, perf, perfFUN = perfFUN), ma), '[', stat_used)
-    m <- matrix(nrow = nrow(s), ncol = ncol(s))
-    m[] <- unlist(s)
-    colnames(m) <- model_names
-    rownames(m) <- stat_used
-    round(m, digits = digits)
+get_summary <- function(models, perfFUN = 1, model_names = as.character(seq_along(models)), 
+                            stat_used = c("est", "ci.lb", "ci.ub", "pi.lb", "pi.ub"), digits = 2) {
+  s <- sapply(lapply(lapply(models, perf, perfFUN = perfFUN), ma), '[', stat_used)
+  m <- matrix(nrow = nrow(s), ncol = ncol(s))
+  m[] <- unlist(s)
+  colnames(m) <- model_names
+  rownames(m) <- stat_used
+  round(m, digits = digits)
 }
 
 #' Make a forest plot
@@ -41,7 +42,8 @@ forest_list <- function(m, stat_id) {
            xlim = xlims[[stat_id]], 
            title = LETTERS[m], 
            perfFUN = stat_used[stat_id], 
-           xlab = stat_names_manuscript[stat_id])
+           xlab = stat_names_manuscript[stat_id],
+           sort = "dontsort")
 }
 
 #' Make a pdf of a forest plot
@@ -49,7 +51,7 @@ forest_list <- function(m, stat_id) {
 #' Params same as forest_list
 pdf_forest <- function(m, stat_id) {
     stat <- c("mse", "int", "slope", "auc")
-    cairo_pdf(filename = paste("ignore/tables/", stat[stat_id], "_", LETTERS[m], ".pdf", sep = ""))
+    cairo_pdf(filename = paste("ignore/figures/", stat[stat_id], "_", LETTERS[m], ".pdf", sep = ""))
     invisible(forest_list(m = m, stat_id = stat_id))
     dev.off() 
 }
