@@ -51,7 +51,7 @@ m3b <- update(m1, genFUN = list("gmd", "rema.beta", "rema.tau"))
 
 models <- list(m1, m2a, m2b, m2c, m3a, m3b)
 
-source("ignore/models/save models.R")
+# source("ignore/models/save models.R")
 source("ignore/models/load models.R")
 
 ##### Comparison.
@@ -66,7 +66,7 @@ all_coefs <- sapply(lapply(models, coef), '[', selected)
 
 # Some of the variables' names are not passed on, as they were not present in the first model.
 rownames(all_coefs) <- selected
-model_names <- c("Mean", "MA mean", "MA both", "MA heterogeneity", "Coefficient of variation", "Gini MD")
+model_names <- c("Mean", "MA mean", "MA both", "MA heterogeneity", "CV", "Gini")
 colnames(all_coefs) <- model_names
 
 all_coefs_manuscript <- round(all_coefs, digits = 2)
@@ -91,7 +91,8 @@ slopes <- get_summary(models, "cal.slope", model_names = model_names)
 aucs <- get_summary(models, "auc", model_names = model_names)
 
 # Combined
-write.csv(rbind(aucs, ints, slopes), file =  "ignore/tables/CS with selection - ma of perfs.csv")
+# write.csv(t(rbind(aucs, ints, slopes)), file =  "ignore/tables/CS with selection - ma of perfs.csv")
+write.csv(rbind(t(aucs), t(ints), t(slopes)), file =  "ignore/tables/CS with selection - ma of perfs.csv")
 
 ### Forest plots
 # Calibration intercept
