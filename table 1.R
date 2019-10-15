@@ -1,7 +1,6 @@
 ##### The data
 source("ignore/data/get imputed data.R")
 
-# library(tidyverse)
 library(dplyr)
 library(finalfit)
 
@@ -16,7 +15,7 @@ table1 <- dvt.s %>%
                        total_col = T)
 table(dvt.s$sex) # For which is which see start.R.
 
-# write.csv(table1, file = "C:/Users/vjong3/surfdrive/Research/GenPred/GenPred-dvt/Tables/table1.csv")
+# write.csv(table1, file = "ignore/tables/table1.csv")
 
 # Alternatively, a summary stratified by study can be obtained by:
 # stratified_summary_factorlist <- function(s) {

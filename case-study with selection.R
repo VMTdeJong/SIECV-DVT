@@ -1,7 +1,7 @@
 remove(list = ls())
 
 ##### Functions
-# metamisc version of 5 April 2019 or later is necessary.
+# metamisc version of 29 August 2019 or later is necessary.
 # install.packages("metamisc", repos="http://R-Forge.R-project.org")
 library(metamisc)
 source("functions.R")
@@ -44,15 +44,15 @@ m2c <- update(m1, genFUN = list("rema", "rema.beta", "rema.tau"), lambda = 0)
 
 ### Strategy 3: Heterogeneity only
 # Model 3: Heterogeneity only: parametric
-m3a <- update(m1, genFUN = list("coef.var", "rema.beta", "rema.tau"))
+m3a <- update(m1, genFUN = list("SD", "rema.beta", "rema.tau"))
 
 # Model 3: Heterogeneity only: non-parametric
 m3b <- update(m1, genFUN = list("gmd", "rema.beta", "rema.tau"))
 
-models <- list(m1, m2a, m2b, m2c, m3a, m3b)
+models <- list(m0 = m0, m1 = m1, m2a = m2a, m2b = m2b, m2c = m2c, m3a = m3a, m3b = m3b)
 
 # source("ignore/models/save models.R")
-source("ignore/models/load models.R")
+# source("ignore/models/load models.R")
 
 ##### Comparison.
 ### Coefficients
@@ -60,13 +60,14 @@ source("ignore/models/load models.R")
 selected <- unique(unlist(lapply(lapply(models, coef), names))) 
 
 # It is important that the ordering of the variables is maintained.
-# Thus We select them as follows.
+# Thus we select them as follows.
 # Note that NA means that a variable was not selected in the model: it's coefficient is zero.
 all_coefs <- sapply(lapply(models, coef), '[', selected)
 
 # Some of the variables' names are not passed on, as they were not present in the first model.
 rownames(all_coefs) <- selected
-model_names <- c("Mean", "MA mean", "MA both", "MA heterogeneity", "CV", "Gini")
+# model_names <- c("None", "Mean", "MA mean", "MA both", "MA heterogeneity", "CV", "Gini")
+model_names <- c("None", "Mean", "MA mean", "MA both", "MA heterogeneity", "SD", "Gini")
 colnames(all_coefs) <- model_names
 
 all_coefs_manuscript <- round(all_coefs, digits = 2)
@@ -74,7 +75,7 @@ all_coefs_manuscript[is.na(all_coefs_manuscript)] <- ""
 all_coefs_manuscript
 data.frame(all_coefs_manuscript, stringsAsFactors = TRUE)
 
-write.csv(data.frame(all_coefs_manuscript, stringsAsFactors = TRUE), file = "ignore/tables/CS with selection - coefs.csv")
+# write.csv(data.frame(all_coefs_manuscript, stringsAsFactors = TRUE), file = "ignore/tables/CS with selection - coefs aug 2019.csv")
 
 
 ### Performance and Generalizability
@@ -90,21 +91,28 @@ slopes <- get_summary(models, "cal.slope", model_names = model_names)
 # AUC
 aucs <- get_summary(models, "auc", model_names = model_names)
 
+all <- rbind(t(aucs), t(ints), t(slopes))
+
+all_formatted <- format_summary(all)
 # Combined
-# write.csv(t(rbind(aucs, ints, slopes)), file =  "ignore/tables/CS with selection - ma of perfs.csv")
-write.csv(rbind(t(aucs), t(ints), t(slopes)), file =  "ignore/tables/CS with selection - ma of perfs.csv")
+# write.csv(rbind(t(aucs), t(ints), t(slopes)), file =  "ignore/tables/CS with selection - ma of perfs.csv")
+write.csv(all_formatted, file =  "ignore/tables/CS with selection - ma of perfs - aug 2019.csv")
+
 
 ### Forest plots
 # Calibration intercept
-# invisible(mapply(forest_list, m = 1:6, stat_id = 2))
-mapply(pdf_forest, m = 1:6, stat_id = 2)
+# invisible(mapply(forest_list, models = models, m = 1:7, stat_id = 2)) 
+# Note: Titles not the same due to 1:7 =/= 2:7
+mapply(pdf_forest, models = models[2:7], m = 1:6, stat_id = 2)
 
 # Calibration slope
-# invisible(mapply(forest_list, m = 1:6, stat_id = 3))
-mapply(pdf_forest, m = 1:6, stat_id = 3)
+# invisible(mapply(forest_list, models = models, m = 1:7, stat_id = 3)) 
+# Note: Titles not the same due to 1:7 =/= 2:7
+mapply(pdf_forest, models = models[2:7], m = 1:6, stat_id = 3)
 
 # AUC
-# invisible(mapply(forest_list, m = 1:6, stat_id = 4))
-mapply(pdf_forest, m = 1:6, stat_id = 4)
+# invisible(mapply(forest_list, models = models, m = 1:7, stat_id = 4))
+# Note: Titles not the same due to 1:7 =/= 2:7
+mapply(pdf_forest, models = models[2:7], m = 1:6, stat_id = 4)
 
 ##### The End. ##### 
