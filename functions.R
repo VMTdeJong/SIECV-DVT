@@ -44,7 +44,7 @@ format_summary <- function(s) {
 #' @param model_id id of model
 #' @param stat_id id of performance statistic \code{stat}
 forest_list <- function(models, model_id, stat_id) {
-    stat_names_manuscript <- c("MSE", "Calibration Intercept", "Calibration Slope", "c-statistic")
+    stat_names_manuscript <- c("MSE", "Calibration-in-the-large", "Calibration Slope", "c-statistic")
     stat_used <- c("mse", "bin.cal.int", "cal.slope", "auc")
     xlim_mse <- c(0, .30)
     xlim_int <- c(-2, 2)
