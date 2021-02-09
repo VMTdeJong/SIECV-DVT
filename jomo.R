@@ -5,6 +5,12 @@ library(jomo)
 # What's missing?
 apply(DVT.to.imp[ , apply(DVT.to.imp, 2, anyNA)], 2, function(x) mean(is.na(x)))
 
+
+dvt_proportions_missing <- t(mapply(function(z) sapply(z, function(x) round(mean(is.na(x)), 2)), 
+                                      split(DVT.to.imp, DVT.to.imp$centre)))[ , -1]
+dvt_proportions_missing
+
+
 # parameters
 nburn = as.integer(10000);
 nbetween = as.integer(1);
